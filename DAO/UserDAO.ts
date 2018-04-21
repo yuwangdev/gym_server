@@ -1,12 +1,8 @@
 import * as Collections from 'typescript-collections';
 import { User } from "../Model/User";
 import { GymDao } from './GymDao';
+import { ConfigParameter } from '../config';
 
-let MongoClient = require('mongodb').MongoClient;
-const db_url = "mongodb://localhost:27017/";
-const db_name = "gym";
-const db_collection_user = "user";
-const db_collection_gym = "gym";
 
 
 export class UserDao {
@@ -20,10 +16,10 @@ export class UserDao {
      * @param callBack 
      */
     public getAllUserIds(callBack: (tmp: Array<User>) => void) {
-        MongoClient.connect(db_url, function (err, db) {
+        ConfigParameter.MongoClient.connect(ConfigParameter.db_url, function (err, db) {
             if (err) throw err;
-            let dbo = db.db(db_name);
-            dbo.collection(db_collection_user).find({}).toArray(function (err, result: Array<User>) {
+            let dbo = db.db(ConfigParameter.db_name);
+            dbo.collection(ConfigParameter.db_collection_user).find({}).toArray(function (err, result: Array<User>) {
                 if (err) throw err;
                 console.log("get the number of all users " + result.length);
                 db.close();
@@ -39,11 +35,11 @@ export class UserDao {
      * @param callBack 
      */
     public getAllUserIdsByGymId(gymId: string, callBack: (tmp: Array<User>) => void) {
-        MongoClient.connect(db_url, function (err, db) {
+        ConfigParameter.MongoClient.connect(ConfigParameter.db_url, function (err, db) {
             if (err) throw err;
-            let dbo = db.db(db_name);
+            let dbo = db.db(ConfigParameter.db_name);
             var query = { gymId: gymId };
-            dbo.collection(db_collection_user).find(query).toArray(function (err, result: Array<User>) {
+            dbo.collection(ConfigParameter.db_collection_user).find(query).toArray(function (err, result: Array<User>) {
                 if (err) throw err;
                 console.log("get the number of all users by the gymId  " + gymId + + " result.length");
                 db.close();
@@ -58,17 +54,17 @@ export class UserDao {
      * @param callBack 
      */
     public createUser(newUser: User, callBack: (flag: boolean) => void) {
-        MongoClient.connect(db_url, function (err, db) {
+        ConfigParameter.MongoClient.connect(ConfigParameter.db_url, function (err, db) {
             if (err) throw err;
-            let dbo = db.db(db_name);
-            dbo.collection(db_collection_user).find({ userId: newUser.userId }).toArray(function (err, result: Array<User>) {
+            let dbo = db.db(ConfigParameter.db_name);
+            dbo.collection(ConfigParameter.db_collection_user).find({ userId: newUser.userId }).toArray(function (err, result: Array<User>) {
                 if (err) throw err;
                 if (result.length != 0) {
                     console.log("%s is existed! Create such user fails.", newUser.userId);
                     callBack(false);
                     db.close();
                 } else {
-                    dbo.collection(db_collection_user).insertOne(newUser, function (err, res) {
+                    dbo.collection(ConfigParameter.db_collection_user).insertOne(newUser, function (err, res) {
                         if (err) throw err;
                         console.log("1 new User is created of the user Id %s", newUser.userId);
 
@@ -96,13 +92,6 @@ export class UserDao {
                         })
 
 
-
-
-
-
-
-
-
                         callBack(true);
                         db.close();
                     });
@@ -121,11 +110,11 @@ export class UserDao {
      */
     public authentificateUser(userId: string, passWord: string, callBack: (inputArray: Array<User>) => void) {
         console.log("receive the data for authentificateUser, %s %s", userId, passWord);
-        MongoClient.connect(db_url, function (err, db) {
+        ConfigParameter.MongoClient.connect(ConfigParameter.db_url, function (err, db) {
             if (err) throw err;
-            let dbo = db.db(db_name);
+            let dbo = db.db(ConfigParameter.db_name);
             let query = { userId: userId, passWord: passWord };
-            dbo.collection(db_collection_user).find(query).toArray(function (err, result: Array<User>) {
+            dbo.collection(ConfigParameter.db_collection_user).find(query).toArray(function (err, result: Array<User>) {
                 if (err) throw err;
                 console.log("get the length of result for  this user login: " + result.length)
                 callBack(result);
@@ -142,11 +131,11 @@ export class UserDao {
      */
     public findUser(userId: string, callBack: (inputArray: Array<User>) => void) {
         console.log("receive the data for findUser, %s", userId);
-        MongoClient.connect(db_url, function (err, db) {
+        ConfigParameter.MongoClient.connect(ConfigParameter.db_url, function (err, db) {
             if (err) throw err;
-            var dbo = db.db(db_name);
+            var dbo = db.db(ConfigParameter.db_name);
             var query = { userId: userId };
-            dbo.collection(db_collection_user).find(query).toArray(function (err, result: Array<User>) {
+            dbo.collection(ConfigParameter.db_collection_user).find(query).toArray(function (err, result: Array<User>) {
                 if (err) throw err;
                 console.log("get the length of result for  this findUser: " + result.length)
                 callBack(result);
@@ -162,9 +151,9 @@ export class UserDao {
      * @param callBack 
      */
     public updateUser(newUserInfo: User, callBack: (flag: boolean) => void) {
-        MongoClient.connect(db_url, function (err, db) {
+        ConfigParameter.MongoClient.connect(ConfigParameter.db_url, function (err, db) {
             if (err) throw err;
-            let dbo = db.db(db_name);
+            let dbo = db.db(ConfigParameter.db_name);
             let myquery = { userId: newUserInfo.userId };
             let newvalues = {
                 $set: {
@@ -176,7 +165,7 @@ export class UserDao {
                     phoneNumber: newUserInfo.phoneNumber
                 }
             };
-            dbo.collection(db_collection_user).updateOne(myquery, newvalues, function (err, res) {
+            dbo.collection(ConfigParameter.db_collection_user).updateOne(myquery, newvalues, function (err, res) {
                 if (err) throw err;
                 console.log("1 User is updated of the user Id %s, data is %s", newUserInfo.userId, JSON.stringify(newUserInfo));
                 callBack(true);
@@ -192,11 +181,11 @@ export class UserDao {
      */
     public deleteUser(userId: string, callBack: (flag: number) => void) {
         console.log("receive the data for deleteUser, %s", userId);
-        MongoClient.connect(db_url, function (err, db) {
+        ConfigParameter.MongoClient.connect(ConfigParameter.db_url, function (err, db) {
             if (err) throw err;
-            let dbo = db.db(db_name);
+            let dbo = db.db(ConfigParameter.db_name);
             let myquery = { userId: userId };
-            dbo.collection(db_collection_user).deleteMany(myquery, function (err, obj) {
+            dbo.collection(ConfigParameter.db_collection_user).deleteMany(myquery, function (err, obj) {
                 if (err) throw err;
                 console.log(obj.result.n + " document(s) deleted");
                 callBack(obj.result.n);

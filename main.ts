@@ -20,6 +20,7 @@ import { Gym } from "./Model/Gym";
 import { User } from "./Model/User";
 import { ItemList } from './Data/ItemList';
 import { Item } from './Model/Item';
+import { Category } from './Model/Category';
 
 // Create application/x-www-form-urlencoded parser
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
@@ -255,7 +256,7 @@ app.get('/findAllGymIds', function (req, res) {
 
 app.get('/getLevelOneCategory', function (req, res) {
     console.log("get the /getLevelOneCategory");
-    let result: Array<Item> = ItemList.LevelOneCategody;
+    let result: Array<Category> = ItemList.LevelOneCategories;
     res.end(JSON.stringify(result));
 })
 
@@ -271,6 +272,7 @@ app.get('/getAllCategorizedItems', function (req, res) {
     let result = ItemList.getAllCombimedItemsData();;
     res.end(JSON.stringify(result));
 })
+
 
 
 
