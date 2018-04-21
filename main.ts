@@ -18,9 +18,10 @@ import { UserDao } from './DAO/UserDao';
 import { GymDao } from './DAO/GymDao';
 import { Gym } from "./Model/Gym";
 import { User } from "./Model/User";
-import { ItemList } from './Data/ItemList';
+import { ItemList } from './Service/ItemListService';
 import { Item } from './Model/Item';
 import { Category } from './Model/Category';
+import { RecordDao } from './DAO/RecordDao';
 
 // Create application/x-www-form-urlencoded parser
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
@@ -39,7 +40,7 @@ app.get('/echo', (req, res) => {
  * USER related endpoints
  */
 // This responds with user login 
-app.post('/createUser', function (req, res) {
+app.post('/user/createUser', function (req, res) {
     let userRequest: string = JSON.stringify(req.body);
     console.log("POST on /createUser, data is %s", userRequest);
     let userDao = new UserDao();
@@ -63,7 +64,7 @@ app.post('/createUser', function (req, res) {
 
 
 // This responds with user login 
-app.post('/checkUser', function (req, res) {
+app.post('/user/checkUser', function (req, res) {
     let userRequest: string = JSON.stringify(req.body);
     console.log("POST on /checkUse, data is %s", userRequest);
     let userDao = new UserDao();
@@ -77,7 +78,7 @@ app.post('/checkUser', function (req, res) {
 })
 
 // This responds with finding the user 
-app.post('/findUser', function (req, res) {
+app.post('/user/findUser', function (req, res) {
     let userRequest: string = JSON.stringify(req.body);
     console.log("POST on /findUser, data is %s", userRequest);
     let userDao = new UserDao();
@@ -96,7 +97,7 @@ app.post('/findUser', function (req, res) {
 
 
 // This responds with user update 
-app.post('/updateUser', function (req, res) {
+app.post('/user/updateUser', function (req, res) {
     let userRequest: string = JSON.stringify(req.body);
     console.log("POST on /updateUser, data is %s", userRequest);
     let userDao = new UserDao();
@@ -117,7 +118,7 @@ app.post('/updateUser', function (req, res) {
 
 
 // This responds with user update 
-app.post('/deleteUser', function (req, res) {
+app.post('/user/deleteUser', function (req, res) {
     let userRequest: string = JSON.stringify(req.body);
     console.log("POST on /deleteUser, data is %s", userRequest);
     let userDao = new UserDao();
@@ -133,7 +134,7 @@ app.post('/deleteUser', function (req, res) {
 })
 
 // This responds with user update 
-app.get('/findAllUserIds', function (req, res) {
+app.get('/user/findAllUserIds', function (req, res) {
     let userDao = new UserDao();
     userDao.getAllUserIds(x => {
         let result: Array<string> = new Array();
@@ -145,7 +146,7 @@ app.get('/findAllUserIds', function (req, res) {
 })
 
 // This responds with user update 
-app.post('/findAllUserIdsByGymId', function (req, res) {
+app.post('/user/findAllUserIdsByGymId', function (req, res) {
     let userRequest: string = JSON.stringify(req.body);
     console.log("POST on /findAllUserIdsByGymId, data is %s", userRequest);
     let userDao = new UserDao();
@@ -165,7 +166,7 @@ app.post('/findAllUserIdsByGymId', function (req, res) {
  */
 
 
-app.post('/createGym', function (req, res) {
+app.post('/gym/createGym', function (req, res) {
     let gymRequest: string = JSON.stringify(req.body);
     console.log("POST on /createGym, data is %s", gymRequest);
     let gymDao = new GymDao();
@@ -188,7 +189,7 @@ app.post('/createGym', function (req, res) {
 });
 
 
-app.post('/findGym', function (req, res) {
+app.post('/gym/findGym', function (req, res) {
     let gymRequest: string = JSON.stringify(req.body);
     console.log("POST on /findGym, data is %s", gymRequest);
     let gymDao = new GymDao();
@@ -206,7 +207,7 @@ app.post('/findGym', function (req, res) {
 })
 
 
-app.post('/updateGym', function (req, res) {
+app.post('/gym/updateGym', function (req, res) {
     let gymRequest: string = JSON.stringify(req.body);
     console.log("POST on /updateGym, data is %s", gymRequest);
     let gymDao = new GymDao();
@@ -226,7 +227,7 @@ app.post('/updateGym', function (req, res) {
 })
 
 
-app.post('/deleteGym', function (req, res) {
+app.post('/gym/deleteGym', function (req, res) {
     let gymRequest: string = JSON.stringify(req.body);
     console.log("POST on /deleteGym, data is %s", gymRequest);
     let gymDao = new GymDao();
@@ -242,7 +243,7 @@ app.post('/deleteGym', function (req, res) {
 })
 
 
-app.get('/findAllGymIds', function (req, res) {
+app.get('/gym/findAllGymIds', function (req, res) {
     let gymDao = new GymDao();
     gymDao.getAllGymIds(x => {
         let result: Array<string> = new Array();
@@ -254,30 +255,72 @@ app.get('/findAllGymIds', function (req, res) {
 })
 
 
-app.get('/getLevelOneCategory', function (req, res) {
+app.get('/item/getLevelOneCategory', function (req, res) {
     console.log("get the /getLevelOneCategory");
     let result: Array<Category> = ItemList.LevelOneCategories;
     res.end(JSON.stringify(result));
 })
 
-app.post('/getWorkoutItemsPerCategory', function (req, res) {
+app.post('/item/getWorkoutItemsPerCategory', function (req, res) {
     let categoryRequest: string = JSON.stringify(req.body);
     console.log("POST on /getWorkoutItemsPerCategory, categorys is %s", categoryRequest);
     let result: Array<Item> = ItemList.getWorkoutItemsPerCategory(req.body.categoryId);
     res.end(JSON.stringify(result));
 })
 
-app.get('/getAllCategorizedItems', function (req, res) {
+app.get('/item/getAllCategorizedItems', function (req, res) {
     console.log("get the /getAllCategorizedItems");
     let result = ItemList.getAllCombimedItemsData();;
     res.end(JSON.stringify(result));
 })
 
+app.get('/item/getAllIndexedItemsList', function (req, res) {
+    console.log("get the /getAllIndexedItemsList");
+    let result = ItemList.getAllIndexedItemsList();;
+    res.end(JSON.stringify(result));
+})
+
+app.post('/item/getItemPerId', function (req, res) {
+    let categoryRequest: string = JSON.stringify(req.body);
+    console.log("POST on /getItemPerId, item id is %s", categoryRequest);
+    res.end(ItemList.getItemPerId(req.body.itemId));
+})
 
 
+app.post('/record/findAllRecordByGymId', function (req, res) {
+    let recordRequest: string = JSON.stringify(req.body);
+    console.log("POST on /findAllRecordByGymId, data is %s", recordRequest);
+    let recordDao = new RecordDao();
+    let gymId: string = req.body.gymId;
+    console.log("gymId is %s", gymId);
+    recordDao.findAllRecordByGymId(gymId, x => {
+        console.log("send the result in /findAllRecordByGymId: " + x.length);
+        if (x.length == 0) {
+            console.log("cannot find this gym of the gym Id %s", gymId);
+            res.end("false");
+        } else {
+            res.end(JSON.stringify(x));
+        }
+    });
+})
 
 
-
+app.post('/record/findAllRecordByUserId', function (req, res) {
+    let recordRequest: string = JSON.stringify(req.body);
+    console.log("POST on /findAllRecordByUserId, data is %s", recordRequest);
+    let recordDao = new RecordDao();
+    let userId: string = req.body.userId;
+    console.log("userId is %s", userId);
+    recordDao.findAllRecordByUserId(userId, x => {
+        console.log("send the result in /findAllRecordByUserId: " + x.length);
+        if (x.length == 0) {
+            console.log("cannot find this user of the user Id %s", userId);
+            res.end("false");
+        } else {
+            res.end(JSON.stringify(x));
+        }
+    });
+})
 
 
 
