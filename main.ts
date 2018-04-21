@@ -18,6 +18,8 @@ import { UserDao } from './DAO/UserDao';
 import { GymDao } from './DAO/GymDao';
 import { Gym } from "./Model/Gym";
 import { User } from "./Model/User";
+import { ItemList } from './Data/ItemList';
+import { Item } from './Model/Item';
 
 // Create application/x-www-form-urlencoded parser
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
@@ -157,13 +159,6 @@ app.post('/findAllUserIdsByGymId', function (req, res) {
 })
 
 
-
-
-
-
-
-
-
 /**
  * GYM related endpoints
  */
@@ -256,6 +251,30 @@ app.get('/findAllGymIds', function (req, res) {
         res.end(JSON.stringify(result));
     });
 })
+
+
+app.get('/getLevelOneCategory', function (req, res) {
+    console.log("get the /getLevelOneCategory");
+    let result: Array<Item> = ItemList.LevelOneCategody;
+    res.end(JSON.stringify(result));
+})
+
+app.post('/getWorkoutItemsPerCategory', function (req, res) {
+    let categoryRequest: string = JSON.stringify(req.body);
+    console.log("POST on /getWorkoutItemsPerCategory, categorys is %s", categoryRequest);
+    let result: Array<Item> = ItemList.getWorkoutItemsPerCategory(req.body.categoryId);
+    res.end(JSON.stringify(result));
+})
+
+app.get('/getAllCategorizedItems', function (req, res) {
+    console.log("get the /getAllCategorizedItems");
+    let result = ItemList.getAllCombimedItemsData();;
+    res.end(JSON.stringify(result));
+})
+
+
+
+
 
 
 
