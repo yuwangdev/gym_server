@@ -22,6 +22,8 @@ import { ItemList } from './Service/ItemListService';
 import { Item } from './Model/Item';
 import { Category } from './Model/Category';
 import { RecordDao } from './DAO/RecordDao';
+import { RecordService } from './Service/RecordService';
+import { StepRecordSaveDao } from './DAO/StepSaveDao';
 
 // Create application/x-www-form-urlencoded parser
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
@@ -322,6 +324,36 @@ app.post('/record/findAllRecordByUserId', function (req, res) {
     });
 })
 
+app.post('/record/insertRecord', function (req, res) {
+    let recordRequest: string = JSON.stringify(req.body);
+    console.log("POST on /record/insertRecord, data is %s", recordRequest);
+    let recordDao = new RecordDao();
+    let recordService = new RecordService();
+
+    recordDao.insertRecord(recordService.generateOneRecordForInsert(
+        req.body.userId,
+        req.body.gymId,
+        req.body.recordItems
+    ), x => {
+        let fff = x ? "true" : "false"
+        console.log("From recordDao.insertRecord(, receive flag is " + fff)
+        res.end(fff);
+    });
+})
+
+
+app.post('/stepSaveRecord/deletePerStepSaveRecordId', function (req, res) {
+    let recordRequest: string = JSON.stringify(req.body);
+    console.log("POST on /stepSaveRecord/deletePerStepSaveRecordId, data is %s", recordRequest);
+    let stepRecordSaveDao = new StepRecordSaveDao();
+
+    stepRecordSaveDao.deleteTransitionalRecordByTransitionalRecordId(
+        req.body.transitionalRecordId,
+        req.body.userId,
+        req.body.gymId
+    );
+    res.end("true");
+})
 
 
 

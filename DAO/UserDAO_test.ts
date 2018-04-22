@@ -1,4 +1,7 @@
-import { UserDao, User, Gym, GymDao } from './DAO';
+import { UserDao } from '../DAO/UserDAO';
+import { GymDao } from '../DAO/GymDao';
+import { User } from '../Model/User';
+import { Gym } from '../Model/Gym';
 let userDao: UserDao = new UserDao();
 let gymDao: GymDao = new GymDao();
 

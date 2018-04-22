@@ -2,19 +2,26 @@ import * as Collections from 'typescript-collections';
 import { Record } from '../Model/Record'
 import { ConfigParameter } from '../config';
 import { ItemList } from '../Service/ItemListService';
+import { StepRecordSaveDao } from './StepSaveDao';
 
 
 export class RecordDao {
 
     private allIndexedItemMap: Collections.Dictionary<string, object>;
+    private stepRecordSaveDao: StepRecordSaveDao;
 
     constructor() {
         console.log("checking the existence of Record collection");
         this.allIndexedItemMap = ItemList.getAllIndexedItemsMap();
+        this.stepRecordSaveDao = new StepRecordSaveDao();
     }
 
 
     public insertRecord(newRecord: Record, callBack: (flag: boolean) => void) {
+
+        // remove the records in step save record table 
+        this.stepRecordSaveDao.deleteTransitionalRecordByTransitionalRecordId(newRecord.recordId, newRecord.userId, newRecord.gymId);
+
         ConfigParameter.MongoClient.connect(ConfigParameter.db_url, function (err, db) {
             if (err) throw err;
             let dbo = db.db(ConfigParameter.db_name);

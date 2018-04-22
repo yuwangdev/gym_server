@@ -1,6 +1,7 @@
 import { RecordDao } from './RecordDao';
+import { Record } from '../Model/Record';
 
-let mockRecord = function () {
+let mockRecord = function (): Record {
 
     let displayDate = new Date().toLocaleDateString();
     let displayTime = new Date().toLocaleTimeString();
@@ -71,20 +72,74 @@ let mockRecord = function () {
 
 
 
-let recordDao = new RecordDao();
+// let recordDao = new RecordDao();
 
-recordDao.insertRecord(mockRecord(), x => console.log(x));
-
-
-recordDao.findAllRecordByUserId("u1", x => {
+// recordDao.insertRecord(mockRecord(), x => console.log(x));
 
 
-
-});
-
-
-recordDao.findAllRecordByGymId("g123", x => {
+// recordDao.findAllRecordByUserId("u1", x => {
 
 
 
-});
+// });
+
+
+// recordDao.findAllRecordByGymId("g123", x => {
+
+
+
+// });
+
+
+console.log(JSON.stringify(mockRecord()));
+
+/* 
+{
+    "recordId":"recordId1234524/21/2018#####8:24:19 PM",
+    "userId":"u1",
+    "gymId":"g12",
+    "timeStamp":"4/21/2018#####8:24:19 PM",
+    "recordItems":[
+       {
+          "recordItemId":"anaerobic.leg.Leg1",
+          "work":[
+             {
+                "workload":1212,
+                "times":222,
+                "durationInSec":121231
+             },
+             {
+                "workload":12,
+                "times":22,
+                "durationInSec":131
+             },
+             {
+                "workload":12,
+                "times":212,
+                "durationInSec":12
+             }
+          ]
+       },
+       {
+          "recordItemId":"aerobic.stairs.Stairs3",
+          "work":[
+             {
+                "workload":1414,
+                "times":444,
+                "durationInSec":141431
+             },
+             {
+                "workload":14,
+                "times":44,
+                "durationInSec":131
+             },
+             {
+                "workload":14,
+                "times":414,
+                "durationInSec":14
+             }
+          ]
+       }
+    ]
+ } 
+ */

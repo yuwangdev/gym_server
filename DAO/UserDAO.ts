@@ -1,4 +1,3 @@
-import * as Collections from 'typescript-collections';
 import { User } from "../Model/User";
 import { GymDao } from './GymDao';
 import { ConfigParameter } from '../config';

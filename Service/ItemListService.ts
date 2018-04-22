@@ -1,8 +1,6 @@
 import { Item } from '../Model/Item';
 import { Category } from '../Model/Category';
 import * as Collections from 'typescript-collections';
-import { ENGINE_METHOD_DIGESTS } from 'constants';
-
 
 
 export class ItemList {
